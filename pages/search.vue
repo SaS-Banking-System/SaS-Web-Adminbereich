@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const adminIDCookie = useCookie("adminid");
+const bearerTokenCookie = useCookie("bearerToken");
 
-if (!adminIDCookie.value) await navigateTo("/login");
+if (!bearerTokenCookie.value) await navigateTo("/login");
 
 const showModal = ref(false);
 const scannedUUID = ref("");
@@ -10,8 +10,15 @@ function handleUUID(uuid: string) {
     scannedUUID.value = uuid;
 }
 
-function searchUUID() {
-    
+async function searchUUID() {
+    const userRequest = await useFetch(
+        `http://localhost:3001/account/exist/${scannedUUID.value}`,
+    );
+
+    if (!userRequest || userRequest.status.value === "error")
+    {
+        return;
+    }
 }
 </script>
 
@@ -32,7 +39,7 @@ function searchUUID() {
                 ></QRscanModal>
              </div>
         </form>
-        <SearchResults />
+        <SearchResultsList />
     </div>
 </template>
 
@@ -42,7 +49,7 @@ function searchUUID() {
     padding: 1px 16px;
     height: 99vh;
     background-color: white;
-    background-image: url("/dashboardbg2.svg");
+    background-image: url("/gradientbackground.svg");
     background-repeat: no-repeat;
     background-size: cover;
 }

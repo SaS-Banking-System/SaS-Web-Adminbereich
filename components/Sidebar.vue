@@ -2,8 +2,8 @@
 
 function signOut()
 {
-    const adminIDCookie = useCookie("adminid");
-    adminIDCookie.value = null;
+    const bearerTokenCookie = useCookie("bearerToken");
+    bearerTokenCookie.value = null;
 
     location.reload();
 }

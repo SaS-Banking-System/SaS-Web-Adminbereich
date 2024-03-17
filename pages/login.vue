@@ -1,18 +1,42 @@
 <script setup lang="ts">
-let adminID = ref<string>("");
 
-if (useCookie("adminid").value) await navigateTo("/");
+let adminUser = ref<string>("");
+let adminPass = ref<string>("");
+let loginRequest = ref<boolean>(false);
+
+if (useCookie("bearerToken").value) await navigateTo("/");
 
 async function login()
 {
-  if (!String(adminID.value).match(/^[0-9]{2,4}$/g)) {
+  if (String(adminUser.value) == null || String(adminUser.value) == '') {
+    return;
+  }
+  if (String(adminPass.value) == null || String(adminPass.value) == '') {
     return;
   }
 
-  //check for valid id
+  loginRequest.value = true;
 
-  const adminIDCookie = useCookie("adminid");
-  adminIDCookie.value = adminID.value;
+  const authRequest = await useFetch(
+    "http://localhost:3001/auth/admin",
+    {
+      method: "post",
+      body: {
+        username: String(adminUser.value),
+        password: String(adminPass.value),
+      },
+    },
+  );
+
+  if (!authRequest || authRequest.status.value === "error") {
+    loginRequest.value = false;
+    return;
+  }
+
+  const bearerTokenCookie = useCookie("bearerToken");
+  bearerTokenCookie.value = String(authRequest.data.value);
+
+  loginRequest.value = false;
 
   navigateTo("/");
 }
@@ -22,8 +46,9 @@ async function login()
   <div class="wrapper">
     <h1>Administratorbereich</h1>
     <form @submit.prevent="login">
-      <input v-model="adminID" type="number" placeholder="Admin-ID" />
-      <button class="login-button" type="submit">Einloggen</button>
+      <input v-model="adminUser" placeholder="Benutzername" />
+      <input v-model="adminPass" placeholder="Passwort" />
+      <button :disabled="loginRequest" @click="login" class="login-button" type="submit">Einloggen</button>
     </form>
   </div>
 </template>
@@ -39,6 +64,14 @@ async function login()
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
 h1 {
   font-size: 2.6rem;
   margin-bottom: 3rem;
@@ -51,7 +84,7 @@ input {
   border: 1px solid rgb(180, 180, 180);
   border-radius: 5px;
   padding: 10px;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   outline: none;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -62,8 +95,7 @@ input:focus {
 
 .login-button {
   all: unset;
-  font-size: 1.3rem;
-  margin-left: 1.1rem;
+  font-size: 1.5rem;
   cursor: pointer;
   background-color: rgb(38, 189, 126);
   color: white;

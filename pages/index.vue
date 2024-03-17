@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const adminIDCookie = useCookie("adminid");
+const bearerTokenCookie = useCookie("bearerToken");
 
-if (!adminIDCookie.value) await navigateTo("/login");
+if (!bearerTokenCookie.value) await navigateTo("/login");
 </script>
 
 <template>   
