@@ -11,8 +11,14 @@ function handleUUID(uuid: string) {
 }
 
 async function searchUUID() {
+
     const userRequest = await useFetch(
-        `http://localhost:3001/account/exist/${scannedUUID.value}`,
+        `http://localhost:3001/account/`,
+        {
+            headers: {
+                "Authorization": `Bearer ${bearerTokenCookie.value}`
+            }
+        }
     );
 
     if (!userRequest || userRequest.status.value === "error")

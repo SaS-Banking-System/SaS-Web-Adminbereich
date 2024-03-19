@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 let adminUser = ref<string>("");
 let adminPass = ref<string>("");
 let loginRequest = ref<boolean>(false);
@@ -33,8 +32,12 @@ async function login()
     return;
   }
 
+  const authData = JSON.stringify(authRequest.data.value);
+  const authJsonObject = JSON.parse(authData);
+  const bearerToken = authJsonObject.access_token;
+
   const bearerTokenCookie = useCookie("bearerToken");
-  bearerTokenCookie.value = String(authRequest.data.value);
+  bearerTokenCookie.value = bearerToken;
 
   loginRequest.value = false;
 

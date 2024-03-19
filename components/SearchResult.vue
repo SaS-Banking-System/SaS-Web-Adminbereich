@@ -13,7 +13,7 @@
                 Guthaben: 20
                 <img src="/dollar.svg" />
             </p>
-            <p>Gesperrt: </p>
+            <p>Gesperrt: X</p>
         </div>
     </button>
 </template>

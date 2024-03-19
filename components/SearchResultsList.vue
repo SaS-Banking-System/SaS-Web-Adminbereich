@@ -1,5 +1,4 @@
 <script setup lang="Ts">
-const props = defineProps(["show"]);
 </script>
 
 <template>
@@ -7,6 +6,7 @@ const props = defineProps(["show"]);
         <h1>Suchergebnisse:</h1>
         <ol class="search-results">
             <li>
+                <SearchResult />
             </li>
         </ol>
     </div>
